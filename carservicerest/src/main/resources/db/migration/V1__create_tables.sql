@@ -3,7 +3,7 @@
 -- DROP SCHEMA IF EXISTS carservicerest ;
 CREATE TABLE IF NOT EXISTS carservicerest.cars
 (
-	id bigint NOT NULL,    
+	id bigserial NOT NULL,    
 	car_code character(50) COLLATE pg_catalog."default",
     make character(50) COLLATE pg_catalog."default",
     model character(50) COLLATE pg_catalog."default",
@@ -18,7 +18,7 @@ ALTER TABLE IF EXISTS carservicerest.cars
     
 CREATE TABLE IF NOT EXISTS categories
 (
-    id bigint NOT NULL,
+    id bigserial NOT NULL,
     category_name character(50) COLLATE pg_catalog."default",
     CONSTRAINT categories_pkey PRIMARY KEY (id)
 )
@@ -30,8 +30,8 @@ ALTER TABLE IF EXISTS categories
 
 CREATE TABLE IF NOT EXISTS car_category
 (
-    car_id bigint NOT NULL,
-    category_id bigint NOT NULL,
+    car_id bigserial NOT NULL,
+    category_id bigserial NOT NULL,
     CONSTRAINT car_category_pkey PRIMARY KEY (car_id, category_id),
     CONSTRAINT fk_car_id FOREIGN KEY (car_id)
         REFERENCES carservicerest.cars (id) MATCH SIMPLE

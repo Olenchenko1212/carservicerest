@@ -36,14 +36,14 @@ public class Car {
 	@Column(name = "year")
 	private int year;
 	
-	@ManyToMany(
-			fetch = FetchType.EAGER,
-			cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-			CascadeType.REFRESH })
-	@JoinTable(name = "carservicerest.car_category",
-				joinColumns = @JoinColumn(name = "car_id", referencedColumnName = "id"),
-				inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
-	private List<Category> categories = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "car_category",
+            joinColumns = @JoinColumn(name = "car_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
+
 
 	public Car() {
 	}

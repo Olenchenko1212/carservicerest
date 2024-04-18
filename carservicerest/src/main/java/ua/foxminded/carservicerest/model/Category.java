@@ -3,6 +3,8 @@ package ua.foxminded.carservicerest.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,8 +26,10 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 	
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "categories")
-	private List<Car> cars = new ArrayList<>();
+	@ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Car> cars;
+
 	
 	public Category() {
 	}
