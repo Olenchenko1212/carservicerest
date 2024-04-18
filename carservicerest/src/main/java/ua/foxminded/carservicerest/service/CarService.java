@@ -8,7 +8,7 @@ import ua.foxminded.carservicerest.model.CarDto;
 
 public interface CarService {
 	Optional<Car> getCar(Long id);
-	List<CarDto> getCars();
+	List<Car> getCars();
 	Car saveCar(CarDto carDto);
 	void updateCar(Car car);
 	void deleteCar(Long id);

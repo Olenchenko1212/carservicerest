@@ -26,14 +26,9 @@ public class CarServiceImpl implements CarService {
 	}
 	
 	@Override
-	public List<CarDto> getCars(){
+	public List<Car> getCars(){
 		List<Car> cars = carRepository.findAll();
-		List<CarDto> carsDto = new ArrayList<>();
-		
-		System.out.println(cars);
-		System.out.println(cars.get(0).getCategories());
-		
-		return carsDto;
+		return cars;
 	}
 	
 	@Override

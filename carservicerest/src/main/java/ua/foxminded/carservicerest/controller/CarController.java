@@ -1,6 +1,7 @@
 package ua.foxminded.carservicerest.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,9 +44,12 @@ public class CarController {
 
 	@GetMapping
 	public List<CarDto> getCars() {
+		List<Car> cars = carService.getCars();
+		List<CarDto> carsDto = new ArrayList<>();
 		
+		System.out.println(cars);
+		System.out.println(cars.get(0).getCategories().get(0));
 		
-		
-		return carService.getCars();
+		return carsDto;
 	}
 }
