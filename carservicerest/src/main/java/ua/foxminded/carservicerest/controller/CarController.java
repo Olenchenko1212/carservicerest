@@ -43,55 +43,9 @@ public class CarController {
 
 	@GetMapping
 	public List<CarDto> getCars() {
+		
+		
+		
 		return carService.getCars();
 	}
-
-	@PostMapping
-	public ResponseEntity<?> createCar(@RequestBody CarDto carDto,
-											BindingResult bindingResult,
-											UriComponentsBuilder uriComponentsBuilder) {
-		if (bindingResult.hasErrors()) {
-			ProblemDetail problemDetail = ProblemDetail
-					.forStatusAndDetail(HttpStatus.BAD_REQUEST, messageSourse
-							.getMessage("errors.400.title", new Object[0], "errors.400.title", LocaleContextHolder.getLocale()));
-			problemDetail.setProperty("errors", bindingResult.getAllErrors().stream()
-										.map(ObjectError::getDefaultMessage)
-										.toList());
-			return ResponseEntity.badRequest().body(problemDetail);
-		} else {
-			Car car = carService.saveCar(carDto);
-			return ResponseEntity
-					.created(uriComponentsBuilder
-							.replacePath("/api/v1/cars/{carId}")
-							.build(Map.of("carId", car.getId())))
-					.body(car);
-		}
-	}
-
-//	@GetMapping("/api/v1/cars")
-//	public List<Car> getCars() {
-//		
-//		List<Car> cars =  carRepo.findAll();
-//		
-//		return cars;
-//	}
-//		List<Category> categories = caterRepo.findAll();
-
-//		System.out.println(catRepo.findByCarModel("Pacifica"));
-//		System.out.println(catRepo.findAll());
-
-//		List<Category> categories = categoryService.getCategories();
-//		System.out.println(categories);
-//		System.out.println(categories.get(0).getCars());
-//		System.out.println(cars.get(0));
-
-//		CarCategory carCat = new CarCategory();
-//		carCat.setCar(cars.get(0));
-//		carCat.setCategory(categories.get(3));
-//		carCatRepo.save(carCat);
-//		System.out.println(cars.get(0).getCarCategories());
-
-//		model.addAttribute("cars", cars);
-//		return "cars";
-
 }
