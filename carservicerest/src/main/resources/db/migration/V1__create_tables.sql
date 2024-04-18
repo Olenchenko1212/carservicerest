@@ -30,24 +30,22 @@ ALTER TABLE IF EXISTS categories
 
 CREATE TABLE IF NOT EXISTS car_category
 (
-    car_id bigint,
-    category_id bigint
+    car_id bigint NOT NULL DEFAULT nextval('carservicerest.car_category_car_id_seq'::regclass),
+    category_id bigint NOT NULL DEFAULT nextval('carservicerest.car_category_category_id_seq'::regclass),
+    CONSTRAINT car_category_pkey PRIMARY KEY (car_id, category_id),
+    CONSTRAINT fk_car_id FOREIGN KEY (car_id)
+        REFERENCES carservicerest.cars (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT fk_category_id FOREIGN KEY (category_id)
+        REFERENCES carservicerest.categories (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
 )
 
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS car_category
-    OWNER to postgres;
-    
-CREATE TABLE IF NOT EXISTS catters
-(
-    id bigint NOT NULL,
-    catter_name character(50) COLLATE pg_catalog."default",
-    car_id bigint,
-    CONSTRAINT catters_pkey PRIMARY KEY (id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS catters
     OWNER to postgres;

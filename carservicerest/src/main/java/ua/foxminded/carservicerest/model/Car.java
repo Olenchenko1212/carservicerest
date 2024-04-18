@@ -1,9 +1,7 @@
 package ua.foxminded.carservicerest.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 
@@ -39,37 +36,31 @@ public class Car {
 	@Column(name = "year")
 	private int year;
 	
-//	@ManyToMany(fetch = FetchType.LAZY)
-//	@JoinTable(name = "carservicerest.car_category",
-//				joinColumns = @JoinColumn(name = "car_id", referencedColumnName = "id"),
-//				inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
-//	private List<Category> categories = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "car")
-	private List<CarCategory> carCategories = new ArrayList<>();
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "car", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-			CascadeType.DETACH, CascadeType.REFRESH })
-	private List<Catter> catters = new ArrayList<>();
+	@ManyToMany(
+			fetch = FetchType.EAGER,
+			cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+			CascadeType.REFRESH })
+	@JoinTable(name = "carservicerest.car_category",
+				joinColumns = @JoinColumn(name = "car_id", referencedColumnName = "id"),
+				inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
+	private List<Category> categories = new ArrayList<>();
 
 	public Car() {
 	}
 
-	public Car(Long id, String carCode, String make, String model, int year, List<CarCategory> carCategories,
-			List<Catter> catters) {
+	public Car(Long id, String carCode, String make, String model, int year, List<Category> categories) {
 		this.id = id;
 		this.carCode = carCode;
 		this.make = make;
 		this.model = model;
 		this.year = year;
-		this.carCategories = carCategories;
-		this.catters = catters;
+		this.categories = categories;
 	}
 
 	@Override
 	public String toString() {
-		return "Car [id=" + id + ", carCode=" + carCode.trim() + ", make=" + make.trim() + ", model=" + model.trim()
-				+ ", year=" + year + "]";
+		return "Car [id=" + id + ", carCode=" + carCode.trim() + ", make=" + make.trim() + ", model=" + model.trim() + ","
+				+ " year=" + year+ "]";
 	}
 
 	@Override
@@ -77,8 +68,7 @@ public class Car {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((carCode == null) ? 0 : carCode.hashCode());
-//		result = prime * result + ((categories == null) ? 0 : categories.hashCode());
-		result = prime * result + ((catters == null) ? 0 : catters.hashCode());
+		result = prime * result + ((categories == null) ? 0 : categories.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((make == null) ? 0 : make.hashCode());
 		result = prime * result + ((model == null) ? 0 : model.hashCode());
@@ -105,18 +95,11 @@ public class Car {
 		} else if (!carCode.equals(other.carCode)) {
 			return false;
 		}
-//		if (categories == null) {
-//			if (other.categories != null) {
-//				return false;
-//			}
-//		} else if (!categories.equals(other.categories)) {
-//			return false;
-//		}
-		if (catters == null) {
-			if (other.catters != null) {
+		if (categories == null) {
+			if (other.categories != null) {
 				return false;
 			}
-		} else if (!catters.equals(other.catters)) {
+		} else if (!categories.equals(other.categories)) {
 			return false;
 		}
 		if (id == null) {
@@ -186,32 +169,11 @@ public class Car {
 		this.year = year;
 	}
 
-//	public List<Category> getCategories() {
-//		return categories;
-//	}
-//
-//	public void setCategories(List<Category> categories) {
-//		this.categories = categories;
-//	}
-
-	public List<Catter> getCatters() {
-		return catters;
+	public List<Category> getCategories() {
+		return categories;
 	}
 
-	public void setCatters(List<Catter> catters) {
-		this.catters = catters;
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
-
-	public List<CarCategory> getCarCategories() {
-		return carCategories;
-	}
-
-	public void setCarCategories(List<CarCategory> carCategories) {
-		this.carCategories = carCategories;
-	}
-	
-//	public void addCategory(Category category) {
-//		categories.add(category);
-//		category.getCars().add(this);
-//	}
 }

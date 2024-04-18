@@ -1,9 +1,7 @@
 package ua.foxminded.carservicerest.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,31 +28,16 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 	
-//	@ManyToMany(
-//			fetch = FetchType.LAZY,
-//			cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-//			CascadeType.REFRESH })
-//	@JoinTable(name = "carservicerest.car_category",
-//				joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
-//				inverseJoinColumns = @JoinColumn(name = "car_id", referencedColumnName = "id"))
-//	@ManyToMany( fetch = FetchType.LAZY, mappedBy = "categories")
-//	private List<Car> cars = new ArrayList<>();
+	@ManyToMany( fetch = FetchType.EAGER, mappedBy = "categories")
+	private List<Car> cars = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "category")
-	private List<CarCategory> carCategories = new ArrayList<>();
-
-	public Category(Long id, String categoryName, List<CarCategory> carCategories) {
-		this.id = id;
-		this.categoryName = categoryName;
-		this.carCategories = carCategories;
-	}
-
 	public Category() {
 	}
 
-	public Category(Long id, String categoryName) {
+	public Category(Long id, String categoryName, List<Car> cars) {
 		this.id = id;
 		this.categoryName = categoryName;
+		this.cars = cars;
 	}
 
 	@Override
@@ -66,7 +49,7 @@ public class Category {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((carCategories == null) ? 0 : carCategories.hashCode());
+		result = prime * result + ((cars == null) ? 0 : cars.hashCode());
 		result = prime * result + ((categoryName == null) ? 0 : categoryName.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
@@ -84,11 +67,11 @@ public class Category {
 			return false;
 		}
 		Category other = (Category) obj;
-		if (carCategories == null) {
-			if (other.carCategories != null) {
+		if (cars == null) {
+			if (other.cars != null) {
 				return false;
 			}
-		} else if (!carCategories.equals(other.carCategories)) {
+		} else if (!cars.equals(other.cars)) {
 			return false;
 		}
 		if (categoryName == null) {
@@ -124,21 +107,12 @@ public class Category {
 		this.categoryName = categoryName.trim();
 	}
 
-//	public List<Car> getCars() {
-//		return cars;
-//	}
-//
-//	public void setCars(List<Car> cars) {
-//		this.cars = cars;
-//	}
-	
-	public List<CarCategory> getCarCategory() {
-		return carCategories;
+	public List<Car> getCars() {
+		return cars;
 	}
 
-	public void setCarCategory(List<CarCategory> carCategories) {
-		this.carCategories = carCategories;
+	public void setCars(List<Car> cars) {
+		this.cars = cars;
 	}
-
 }
 

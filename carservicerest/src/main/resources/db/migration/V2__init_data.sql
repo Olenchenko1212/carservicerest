@@ -10,7 +10,3 @@ insert into categories(id, category_name) values (4,'Minivan');
 insert into car_category(car_id, category_id) values (1, 1); 
 insert into car_category(car_id, category_id) values (3, 4);
 insert into car_category(car_id, category_id) values (2, 1);
-
-insert into catters(id, catter_name, car_id) values (1, 'May', 2);
-insert into catters(id, catter_name, car_id) values (2, 'May1', 1);
-insert into catters(id, catter_name, car_id) values (3, 'May2', 3);
