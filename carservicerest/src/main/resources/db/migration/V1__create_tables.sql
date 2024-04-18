@@ -1,24 +1,24 @@
 -- SCHEMA: carservicerest
 
 -- DROP SCHEMA IF EXISTS carservicerest ;
-CREATE TABLE IF NOT EXISTS cars
+CREATE TABLE IF NOT EXISTS carservicerest.cars
 (
-    id bigint NOT NULL,
-    car_code character(50) COLLATE pg_catalog."default",
+	id bigint NOT NULL DEFAULT nextval('carservicerest.cars_id_seq'::regclass),    
+	car_code character(50) COLLATE pg_catalog."default",
     make character(50) COLLATE pg_catalog."default",
     model character(50) COLLATE pg_catalog."default",
-    year integer,
+    year integer NOT NULL,
     CONSTRAINT cars_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS cars
+ALTER TABLE IF EXISTS carservicerest.cars
     OWNER to postgres;
     
 CREATE TABLE IF NOT EXISTS categories
 (
-    id bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('carservicerest.categories_id_seq'::regclass),
     category_name character(50) COLLATE pg_catalog."default",
     CONSTRAINT categories_pkey PRIMARY KEY (id)
 )
@@ -30,8 +30,8 @@ ALTER TABLE IF EXISTS categories
 
 CREATE TABLE IF NOT EXISTS car_category
 (
-    car_id bigint NOT NULL DEFAULT nextval('carservicerest.car_category_car_id_seq'::regclass),
-    category_id bigint NOT NULL DEFAULT nextval('carservicerest.car_category_category_id_seq'::regclass),
+    car_id bigint NOT NULL,
+    category_id bigint NOLL,
     CONSTRAINT car_category_pkey PRIMARY KEY (car_id, category_id),
     CONSTRAINT fk_car_id FOREIGN KEY (car_id)
         REFERENCES carservicerest.cars (id) MATCH SIMPLE
