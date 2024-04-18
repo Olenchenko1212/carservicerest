@@ -28,7 +28,7 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 	
-	@ManyToMany( fetch = FetchType.EAGER, mappedBy = "categories")
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "categories")
 	private List<Car> cars = new ArrayList<>();
 	
 	public Category() {
