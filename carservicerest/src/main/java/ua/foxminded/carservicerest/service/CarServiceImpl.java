@@ -29,8 +29,10 @@ public class CarServiceImpl implements CarService {
 	public List<CarDto> getCars(){
 		List<Car> cars = carRepository.findAll();
 		List<CarDto> carsDto = new ArrayList<>();
+		
 		System.out.println(cars);
 		System.out.println(cars.get(0).getCategories());
+		
 		return carsDto;
 	}
 	
