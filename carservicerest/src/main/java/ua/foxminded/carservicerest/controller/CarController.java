@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import lombok.RequiredArgsConstructor;
 import ua.foxminded.carservicerest.model.Car;
 import ua.foxminded.carservicerest.model.CarDto;
 import ua.foxminded.carservicerest.model.Category;
