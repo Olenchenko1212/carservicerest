@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
 import ua.foxminded.carservicerest.model.Car;
 import ua.foxminded.carservicerest.model.CarDto;
 import ua.foxminded.carservicerest.repository.CarRepository;
@@ -32,11 +31,6 @@ public class CarServiceImpl implements CarService {
 		List<CarDto> carsDto = new ArrayList<>();
 		System.out.println(cars);
 		System.out.println(cars.get(0).getCategories());
-//		for(Car car : cars) {
-//			System.out.println(car.getCarCategories());
-//			carsDto.add(new CarDto(car.getId(), car.getCarCode().trim(), car.getMake().trim(), car.getModel().trim(), car.getYear(), car.getCarCategories()));
-//		}
-//		System.out.println(carsDto);
 		return carsDto;
 	}
 	
