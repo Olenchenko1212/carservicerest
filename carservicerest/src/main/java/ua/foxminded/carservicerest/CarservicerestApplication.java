@@ -2,6 +2,7 @@ package ua.foxminded.carservicerest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(scanBasePackages = "ua.foxminded.carservicerest")
 public class CarservicerestApplication {
