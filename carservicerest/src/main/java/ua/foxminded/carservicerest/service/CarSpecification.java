@@ -1,4 +1,4 @@
-package ua.foxminded.carservicerest.service;
+package ua.foxminded.carservicerest.util;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
@@ -9,6 +9,10 @@ import jakarta.persistence.criteria.Root;
 import ua.foxminded.carservicerest.model.Car;
 
 public class CarSpecification {
+	
+	private CarSpecification() {
+		throw new IllegalStateException("Utility class");
+	}
 
 	public static Specification<Car> filterByMake(String keyword) {
 		return StringUtils.hasText(keyword)

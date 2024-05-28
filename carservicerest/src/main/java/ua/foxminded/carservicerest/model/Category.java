@@ -2,6 +2,8 @@ package ua.foxminded.carservicerest.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,6 +33,7 @@ public class Category {
 	private String categoryName;
 	
 	@ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+	@JsonIgnore
 	@ToString.Exclude
     private List<Car> cars;
 }

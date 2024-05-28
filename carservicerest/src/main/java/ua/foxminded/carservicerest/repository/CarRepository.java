@@ -10,6 +10,7 @@ import ua.foxminded.carservicerest.model.Car;
 
 @Repository
 public interface CarRepository extends JpaRepository<Car, Long>, PagingAndSortingRepository<Car, Long>, JpaSpecificationExecutor<Car> {
+	
 	@Query(value = "select exists(select 1 from carservicerest.cars) as Output;", nativeQuery = true)
 	boolean findAnyCar();
 }
