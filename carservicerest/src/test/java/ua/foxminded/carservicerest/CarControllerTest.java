@@ -61,10 +61,7 @@ class CarControllerTest {
 	void whenRequestForCreateIsValidExpectNewCar() throws Exception {
 
 		var requestBuilder = MockMvcRequestBuilders.post("/api/v1/cars").contentType(MediaType.APPLICATION_JSON)
-				.content(
-						"""
-							{"carCode": "i6jT5ByjBF", "make": "Ford", "model": "Ranger SuperCab", "year": 2020, "categories": []}
-						""");
+				.content(TestUtils.CARDTO_JSON);
 
 		mockMvc.perform(requestBuilder).andExpect(jsonPath("$.carCode").value("i6jT5ByjBF"))
 				.andExpect(jsonPath("$.make").value("Ford")).andExpect(jsonPath("$.model").value("Ranger SuperCab"))
@@ -78,18 +75,11 @@ class CarControllerTest {
 	void whenRequestForCreateIsNotValidExpectExeption() throws Exception {
 
 		var requestBuilder = MockMvcRequestBuilders.post("/api/v1/cars").contentType(MediaType.APPLICATION_JSON)
-				.content("""
-							{"carCode": "", "make" : "", "model" : "", "year" : null, "categories": []}
-						""");
+				.content(TestUtils.EMPTY_CARDTO_JSON);
 
 		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isBadRequest(),
-				content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON), content().json("""
-						{"errors" : [
-								"carCode : the size must be within the range of 1 to 15 symbols",
-								"make : the size must be within the range of 1 to 30 symbols",
-								"model : the size must be within the range of 1 to 30 symbols",
-								"year : positive number, min 1900 is required"]
-						}"""));
+				content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+				content().json(TestUtils.ERRORS_JSON));
 	}
 
 	@Test
@@ -100,10 +90,8 @@ class CarControllerTest {
 
 		this.mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isOk(),
 				content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-				jsonPath("$.content.length()").value(1),
-				jsonPath("$.content[0].id").value("1"),
-				jsonPath("$.content[0].carCode").value("j7cAeeW8ny"),
-				jsonPath("$.content[0].make").value("Ford"),
+				jsonPath("$.content.length()").value(1), jsonPath("$.content[0].id").value("1"),
+				jsonPath("$.content[0].carCode").value("j7cAeeW8ny"), jsonPath("$.content[0].make").value("Ford"),
 				jsonPath("$.content[0].model").value("F150 SuperCrew Cab"),
 				jsonPath("$.content[0].year").value("2016"));
 	}
@@ -123,16 +111,10 @@ class CarControllerTest {
 	@Sql("/sql/createData.sql")
 	void whenUpdateCarRequestIsValidExpectNoContent() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.patch("/api/v1/cars/1")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(
-						"""
-							{"carCode": "i6jT5ByjBF", "make": "Ford1", "model": "Ranger SuperCab 1", "year": 2020, "categories": []}
-						""");
+		var requestBuilder = MockMvcRequestBuilders.patch("/api/v1/cars/1").contentType(MediaType.APPLICATION_JSON)
+				.content(TestUtils.UPDATE_CARDTO_JSON);
 
-		mockMvc.perform(requestBuilder)
-			.andDo(print())
-			.andExpectAll(status().isNoContent());
+		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isNoContent());
 	}
 
 	@Test
@@ -141,19 +123,15 @@ class CarControllerTest {
 
 		var requestBuilder = MockMvcRequestBuilders.delete("/api/v1/cars/1");
 
-		mockMvc.perform(requestBuilder)
-			.andDo(print())
-			.andExpectAll(status().isNoContent());
+		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isNoContent());
 	}
-	
+
 	@Test
 	@Sql("/sql/createData.sql")
 	void whenDeleteCarRequestButNotFoundExpectNoSuchElementException() throws Exception {
 
 		var requestBuilder = MockMvcRequestBuilders.delete("/api/v1/cars/999999");
 
-		mockMvc.perform(requestBuilder)
-			.andDo(print())
-			.andExpectAll(status().isNotFound());
+		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isNotFound());
 	}
 }
