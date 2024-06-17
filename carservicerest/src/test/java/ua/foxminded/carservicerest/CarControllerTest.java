@@ -1,6 +1,7 @@
 package ua.foxminded.carservicerest;
 
 import org.junit.jupiter.api.AfterAll;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,9 @@ class CarControllerTest {
 	@Test
 	void whenRequestForCreateIsValidExpectNewCar() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.post("/api/v1/cars").contentType(MediaType.APPLICATION_JSON)
+		var requestBuilder = MockMvcRequestBuilders.post("/api/v1/cars")
+				.with(jwt().jwt(builder -> builder.claim("scope", "create:car")))
+				.contentType(MediaType.APPLICATION_JSON)
 				.content(TestUtils.CARDTO_JSON);
 
 		mockMvc.perform(requestBuilder).andExpect(jsonPath("$.carCode").value("i6jT5ByjBF"))
@@ -70,11 +73,26 @@ class CarControllerTest {
 								"http://localhost/api/v1/cars/makers/Ford/models/Ranger%20SuperCab/year/2020"),
 						content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 	}
+	
+	@Test
+	void whenRequestForCreateIsValidButNoCredentialsExpect() throws Exception {
+
+		var requestBuilder = MockMvcRequestBuilders.post("/api/v1/cars")
+				.with(jwt().jwt(builder -> builder.claim("scope", "")))
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(TestUtils.CARDTO_JSON);
+
+		mockMvc.perform(requestBuilder)
+					.andDo(print())
+					.andExpectAll(status().isForbidden());
+	}
 
 	@Test
 	void whenRequestForCreateIsNotValidExpectExeption() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.post("/api/v1/cars").contentType(MediaType.APPLICATION_JSON)
+		var requestBuilder = MockMvcRequestBuilders.post("/api/v1/cars")
+				.with(jwt().jwt(builder -> builder.claim("scope", "create:car")))
+				.contentType(MediaType.APPLICATION_JSON)
 				.content(TestUtils.EMPTY_CARDTO_JSON);
 
 		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isBadRequest(),
@@ -86,7 +104,9 @@ class CarControllerTest {
 	@Sql("/sql/createData.sql")
 	void whenRequestListCarsExpectPageWithCars() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.get("/api/v1/cars").param("make", "Ford");
+		var requestBuilder = MockMvcRequestBuilders.get("/api/v1/cars")
+				.param("make", "Ford")
+				.with(jwt().jwt(builder -> builder.claim("scope", "")));
 
 		this.mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isOk(),
 				content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
@@ -100,18 +120,31 @@ class CarControllerTest {
 	@Sql("/sql/createData.sql")
 	void whenRequestToGetCarButNotExistExpectEmptyResponse() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.get("/api/v1/cars").param("make", "Honda");
+		var requestBuilder = MockMvcRequestBuilders.get("/api/v1/cars")
+				.param("make", "Honda")
+				.with(jwt().jwt(builder -> builder.claim("scope", "")));
 
 		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isOk(),
 				content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
 				jsonPath("$.content.length()").value(0));
+	}
+	
+	@Test
+	@Sql("/sql/createData.sql")
+	void whenRequestToGetCarFromAnonymousUserExpectResponseUnauthorized() throws Exception {
+
+		var requestBuilder = MockMvcRequestBuilders.get("/api/v1/cars").param("make", "Honda");
+
+		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isUnauthorized());
 	}
 
 	@Test
 	@Sql("/sql/createData.sql")
 	void whenUpdateCarRequestIsValidExpectNoContent() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.patch("/api/v1/cars/1").contentType(MediaType.APPLICATION_JSON)
+		var requestBuilder = MockMvcRequestBuilders.patch("/api/v1/cars/1")
+				.with(jwt().jwt(builder -> builder.claim("scope", "update:car")))
+				.contentType(MediaType.APPLICATION_JSON)
 				.content(TestUtils.UPDATE_CARDTO_JSON);
 
 		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isNoContent());
@@ -121,7 +154,7 @@ class CarControllerTest {
 	@Sql("/sql/createData.sql")
 	void whenDeleteCarRequestIsValidExpectNoContent() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.delete("/api/v1/cars/1");
+		var requestBuilder = MockMvcRequestBuilders.delete("/api/v1/cars/1").with(jwt().jwt(builder -> builder.claim("scope", "delete:car")));
 
 		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isNoContent());
 	}
@@ -130,8 +163,17 @@ class CarControllerTest {
 	@Sql("/sql/createData.sql")
 	void whenDeleteCarRequestButNotFoundExpectNoSuchElementException() throws Exception {
 
-		var requestBuilder = MockMvcRequestBuilders.delete("/api/v1/cars/999999");
+		var requestBuilder = MockMvcRequestBuilders.delete("/api/v1/cars/999999").with(jwt().jwt(builder -> builder.claim("scope", "delete:car")));
 
 		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isNotFound());
+	}
+	
+	@Test
+	@Sql("/sql/createData.sql")
+	void whenDeleteCarRequestButNoScopeInJwtTokenExpectResponseForbidden() throws Exception {
+
+		var requestBuilder = MockMvcRequestBuilders.delete("/api/v1/cars/2").with(jwt().jwt(builder -> builder.claim("scope", "")));
+
+		mockMvc.perform(requestBuilder).andDo(print()).andExpectAll(status().isForbidden());
 	}
 }
