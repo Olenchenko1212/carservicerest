@@ -1,6 +1,6 @@
 -- SCHEMA: carservicerest
 
--- DROP SCHEMA IF EXISTS carservicerest ;
+--DROP SCHEMA IF EXISTS carservicerest ;
 CREATE TABLE IF NOT EXISTS carservicerest.cars
 (
 	id bigserial NOT NULL,    
@@ -12,11 +12,8 @@ CREATE TABLE IF NOT EXISTS carservicerest.cars
 )
 
 TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS carservicerest.cars
-    OWNER to postgres;
     
-CREATE TABLE IF NOT EXISTS categories
+CREATE TABLE IF NOT EXISTS carservicerest.categories
 (
     id bigserial NOT NULL,
     category_name character(50) COLLATE pg_catalog."default",
@@ -25,10 +22,7 @@ CREATE TABLE IF NOT EXISTS categories
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS categories
-    OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS car_category
+CREATE TABLE IF NOT EXISTS carservicerest.car_category
 (
     car_id bigserial NOT NULL,
     category_id bigserial NOT NULL,
@@ -46,6 +40,3 @@ CREATE TABLE IF NOT EXISTS car_category
 )
 
 TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS car_category
-    OWNER to postgres;

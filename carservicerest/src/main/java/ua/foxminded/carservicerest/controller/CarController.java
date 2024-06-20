@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ua.foxminded.carservicerest.model.Car;
 import ua.foxminded.carservicerest.model.CarDto;
@@ -35,8 +37,7 @@ public class CarController {
 	private final CarService carService;
 
 	@GetMapping
-	public Page<Car> findCarsSpec(
-			@RequestParam(defaultValue = "0") int page,
+	public Page<Car> findCarsSpec(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int size,
 			@RequestParam(value = "sortDerection", defaultValue = "DESC", required = false) Sort.Direction sortDerection,
 			@RequestParam(value = "sortBy", defaultValue = "ID", required = false) FieldSort fieldSort,
@@ -48,36 +49,42 @@ public class CarController {
 
 		PageRequest pr = PageRequest.of(page, size, sortDerection, fieldSort.getFieldSort());
 		SearchCriteria searchCriteria = new SearchCriteria(make, model, minYear, maxYear, category);
-		return carService.findCarsSpec(pr, searchCriteria);
-	}
 
-	@GetMapping("/{id}")
-	public Car findById(@PathVariable("id") Long id) {
-		return carService.findCar(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		return carService.findCarsSpec(pr, searchCriteria);
+
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Car> createCar(@RequestBody CarDto carDto, UriComponentsBuilder uriComponentsBuilder) {
-		Car car = carService.saveCar(carDto);
-		return ResponseEntity
-				.created(uriComponentsBuilder.replacePath("/api/v1/cars/makers/{make}/models/{model}/year/{year}")
-						.build(Map.of("make", car.getMake(), "model", car.getModel(), "year", car.getYear())))
-				.body(car);
+	public ResponseEntity<?> createCar(@Valid @RequestBody CarDto carDto, BindingResult bindingResult,
+			UriComponentsBuilder uriComponentsBuilder) throws BindException {
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
+		} else {
+			Car car = carService.saveCar(carDto);
+			return ResponseEntity
+					.created(uriComponentsBuilder.replacePath("/api/v1/cars/makers/{make}/models/{model}/year/{year}")
+							.build(Map.of("make", car.getMake(), "model", car.getModel(), "year", car.getYear())))
+					.body(car);
+		}
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<Car> updateCar(@PathVariable("id") Long id, @RequestBody CarDto carDto) throws Exception {
-		Car car = carService.findCar(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-		carService.updateCar(car, carDto);
+	public ResponseEntity<?> updateCar(@PathVariable("id") Long id, @Valid @RequestBody CarDto carDto,
+			BindingResult bindingResult) throws BindException {
+
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
+		} else {
+			carService.updateCar(id, carDto);
+		}
 		return ResponseEntity.noContent().build();
 
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteCar(@PathVariable("id") Long id) {
-		Car car = carService.findCar(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-		carService.deleteCar(car.getId());
+		carService.deleteCar(id);
 		return ResponseEntity.noContent().build();
 	}
 }

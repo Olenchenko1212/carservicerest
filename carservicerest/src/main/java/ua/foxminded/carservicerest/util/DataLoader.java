@@ -1,4 +1,4 @@
-package ua.foxminded.carservicerest;
+package ua.foxminded.carservicerest.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,14 @@ import ua.foxminded.carservicerest.model.Category;
 import ua.foxminded.carservicerest.service.CarService;
 import ua.foxminded.carservicerest.service.CategoryService;
 
+@Profile("!test")
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
 	static final String FILE_NAME = "file.csv";
+	static final String END_FILE = ",,,,";
 	static final int ROWS_FOR_CARS = 4;
 	
 	private final CarService carService;
@@ -33,6 +36,7 @@ public class DataLoader implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		
 		boolean existsAnyCar = carService.findAnyCar();
+		
 		if(existsAnyCar) {
 			log.info("NOT load data because is already exists");
 		} else {
@@ -42,7 +46,7 @@ public class DataLoader implements CommandLineRunner {
 				String line;
 				boolean skipFirstRow = true;
 				while ((line = br.readLine()) != null) {
-					if (!skipFirstRow && !line.equals(",,,,")) {
+					if (!skipFirstRow && !line.equals(END_FILE)) {
 						String[] data = line.split(",");
 						Car car = getCar(data);				
 						CarDto carDto = new CarDto(car.getCarCode(), car.getMake(), car.getModel(), car.getYear(), getCategories(data));			
