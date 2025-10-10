@@ -1,0 +1,4 @@
+okta:
+  oauth2:
+    issuer: https://dev-vczxzl14tpmynsfk.us.auth0.com/
+    audience: http://localhost:8080/api/v1/cars
