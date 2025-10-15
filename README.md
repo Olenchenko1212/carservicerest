@@ -68,8 +68,8 @@ classDiagram
   class CarController
   class CarService
   class CarServiceImpl
-  class CarRepository <<interface>>
-  class CategoryRepository <<interface>>
+  class CarRepository
+  class CategoryRepository
   class SecurityConfig
   class DataLoader
 
