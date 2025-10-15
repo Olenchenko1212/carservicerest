@@ -49,7 +49,6 @@ Class diagram of core domain and layers:
 
 ```mermaid
 classDiagram
-  direction LR
 
   class Car {
     +Long id
@@ -64,33 +63,22 @@ classDiagram
     +String categoryName
   }
 
-  Car "*" -- "*" Category : many-to-many
+  Car "*" -- "*" Category
 
-  class CarController {
-    +GET /api/v1/cars
-    +POST /api/v1/cars
-    +PATCH /api/v1/cars/{id}
-    +DELETE /api/v1/cars/{id}
-  }
-
-  class CarService {
-    +boolean findAnyCar()
-    +Page<Car> findCarsSpec(PageRequest, SearchCriteria)
-    +Car saveCar(CarDto)
-    +void updateCar(Long, CarDto)
-    +void deleteCar(Long)
-  }
-
+  class CarController
+  class CarService
   class CarServiceImpl
   class CarRepository <<interface>>
   class CategoryRepository <<interface>>
   class SecurityConfig
+  class DataLoader
 
-  CarController --> CarService
   CarServiceImpl ..|> CarService
+  CarController --> CarService
   CarServiceImpl --> CarRepository
-  CarServiceImpl --> CategoryRepository : via DataLoader
-  SecurityConfig ..> CarController : protects /api/v1/cars
+  DataLoader --> CarService
+  DataLoader --> CategoryRepository
+  SecurityConfig ..> CarController
 ```
 
 ## API overview
