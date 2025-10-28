@@ -1,0 +1,7 @@
+ua/foxminded/carservicerest/CarControllerTest.class
+ua/foxminded/carservicerest/util/CarSpecificationTest.class
+ua/foxminded/carservicerest/service/CategoryServiceImplTest.class
+ua/foxminded/carservicerest/CarservicerestApplicationTests.class
+ua/foxminded/carservicerest/controller/HandlerExceptionTest.class
+ua/foxminded/carservicerest/service/CarServiceImplTest.class
+ua/foxminded/carservicerest/TestUtils.class
